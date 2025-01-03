@@ -47,8 +47,6 @@ public:
 	virtual void Die();
 };
 
-LINK_ENTITY_TO_CLASS(monster_scientist, CScientist);
-
 void CScientist::Spawn()
 {
 	PRECACHE_SOUND("barney/ba_die1.wav");

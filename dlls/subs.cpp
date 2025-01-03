@@ -254,29 +254,19 @@ void CBaseMonster::WalkMonsterStart()
 	pev->takedamage = DAMAGE_AIM;
 	pev->ideal_yaw = pev->angles.y;
 	SetBits(pev->flags, FL_MONSTER);
-	SetThink(&CBaseMonster::CallMonsterThink);
-	m_iActivity = ACT_IDLE1;
-	if (pev->target)
-	{
-		pev->goalentity = OFFSET(FIND_ENTITY_BY_STRING(NULL, "targetname", STRING(pev->target)));
-		if (pev->goalentity)
-		{
-			entvars_t *goal = VARS(pev->goalentity);
-			Vector goaltest;
-			goaltest.x = goal->origin.x - pev->origin.x;
-			goaltest.y = goal->origin.y - pev->origin.y;
-			goaltest.z = goal->origin.z - pev->origin.z;
-			pev->ideal_yaw = UTIL_VecToYaw(goaltest);
-			if (!FClassnameIs(VARS(pev->goalentity), "path_corner"))
-				ALERT(at_aiconsole, "WalkMonsterStart--monster's initial goal '%s' is not a path_corner", STRING(pev->target));
-			m_iActivity = ACT_WALK;
-		}
-		else
-		{
-			ALERT(at_warning, "WalkMonsterStart--%s couldn't find target %s", STRING(pev->classname), STRING(pev->target));
-		}
-	}
-		pev->nextthink += UTIL_RandomFloat(0.0, 0.5) + 0.5;
+	SetThink(&CBaseMonster::CallMonsterThink)
+	edict_t *player = FIND_ENTITY_BY_STRING(NULL, "classname", "player");
+	pev->goalentity = OFFSET(player); //player hasnt spawned in yet but whatever
+	entvars_t *goal = VARS(pev->goalentity);
+	Vector goaltest;
+	goaltest.x = goal->origin.x - pev->origin.x;
+	goaltest.y = goal->origin.y - pev->origin.y;
+	goaltest.z = goal->origin.z - pev->origin.z;
+	pev->ideal_yaw = UTIL_VecToYaw(goaltest);
+	if (!FClassnameIs(VARS(pev->goalentity), "path_corner"))
+		ALERT(at_aiconsole, "WalkMonsterStart--monster's initial goal '%s' is not a path_corner", STRING(pev->target));
+	m_iActivity = ACT_WALK;
+	pev->nextthink += UTIL_RandomFloat(0.0, 0.5) + 0.5;
 }
 
 void CBaseMonster::CallMonsterThink()
@@ -287,19 +277,14 @@ void CBaseMonster::CallMonsterThink()
 	SetActivity(m_iActivity);
 	StudioFrameAdvance(0.1);
 	//ResetSequenceInfo(0.1); // test
-	if (pev->enemy)
+	pev->goalentity = OFFSET(FIND_ENTITY_BY_STRING(NULL, "classname", "player"));
+	if (pev->health > 0)
+		m_iActivity = 4;
+
+	if (pev->radsuit_finished < pgv->time)
 	{
-		if (pev->health > 0)
-		{
-			enemy = VARS(enemy);
-			if (VARS(pev->enemy)->health <= 0)
-			{
-				pev->enemy = NULL;
-				m_iActivity = 1;
-				return;
-			}
-			//distance = somethingsomething
-		}
+		Alert();
+		pev->radsuit_finished = pgv->time + UTIL_RandomFloat(1, 4);
 	}
 	switch (m_iActivity)
 	{
@@ -321,7 +306,7 @@ void CBaseMonster::CallMonsterThink()
 		//	m_iActivity = 2;
 		break;
 	case 4:
-		UTIL_MoveToOrigin(ENT(pev), VARS(pev->goalentity)->origin, m_flGroundSpeed, 1);
+		UTIL_MoveToOrigin(ENT(pev), VARS(pev->goalentity)->origin, m_flGroundSpeed * 3, 1);
 		//  the line above causes the screen to blink and monsters dissappear
 		//  and a bunch of other funky stuff i literally
 		//  do not know why

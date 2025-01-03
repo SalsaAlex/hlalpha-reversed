@@ -48,8 +48,6 @@ public:
 	//void leap_touch;
 };
 
-LINK_ENTITY_TO_CLASS(monster_headcrab, CHeadCrab);
-
 void CHeadCrab::Spawn()
 {
 	PRECACHE_SOUND("headcrab/hc_attack1.wav");

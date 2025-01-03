@@ -46,8 +46,6 @@ public:
 	//virtual void Blast();
 };
 
-LINK_ENTITY_TO_CLASS(monster_houndeye, CHoundEye);
-
 void CHoundEye::Spawn()
 {
 	PRECACHE_SOUND("houndeye/he_alert1.wav");

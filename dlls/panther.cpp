@@ -30,9 +30,6 @@ public:
 	virtual void SetActivity(int activity);
 	virtual void Die();
 };
-
-LINK_ENTITY_TO_CLASS(monster_panther, CPanther);
-
 void CPanther::Spawn()
 {
 	PRECACHE_MODEL("models/panther.mdl");

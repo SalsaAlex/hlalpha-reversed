@@ -51,13 +51,17 @@ public:
 	virtual void Spawn();
 	virtual int Classify() { return 5; };
 	virtual void SetActivity(int activity);
-	void Barney_Pissed();
+	virtual void Alert();
 	virtual void Pain(float flDamage);
 	virtual void Die();
 	virtual int CheckEnemy(int a2, float a3);
 };
 
 LINK_ENTITY_TO_CLASS(monster_barney, CBarney);
+LINK_ENTITY_TO_CLASS(monster_scientist, CBarney);
+LINK_ENTITY_TO_CLASS(monster_headcrab, CBarney);
+LINK_ENTITY_TO_CLASS(monster_houndeye, CBarney);
+LINK_ENTITY_TO_CLASS(monster_panther, CBarney);
 
 void CBarney::Spawn()
 {
@@ -75,7 +79,7 @@ void CBarney::Spawn()
 	pev->movetype = MOVETYPE_STEP;
 	pev->effects = 0;
 	pev->health = 7;
-	pev->yaw_speed = 8;
+	pev->yaw_speed = 50;
 	pev->sequence = 17;
 	//unknownvariable = 1;
 	m_bloodColor = 70;
@@ -186,7 +190,7 @@ void CBarney::SetActivity(int activity)
     }
 }
 
-void CBarney::Barney_Pissed()
+void CBarney::Alert()
 {
     EMIT_SOUND(ENT(pev), CHAN_VOICE, "barney/ba_attack1.wav", 1, ATTN_NORM);
     //*(_DWORD*)(this + 128) = 6;
@@ -196,7 +200,7 @@ void CBarney::Barney_Pissed()
 void CBarney::Pain(float flDamage)
 {
     EMIT_SOUND(ENT(pev), CHAN_VOICE, "barney/ba_pain1.wav", 1, ATTN_NORM);
-    Barney_Pissed();
+    Alert();
 }
 
 void CBarney::Die()
