@@ -1,5 +1,4 @@
 ### This repository is held under the HL1 SDK License provided by Valve Corporations.
-### This repository has been abandoned in favor of BlackShadow/re-ALPHA
 
 #### features that are yet to be added:
 - mp5 grenade
